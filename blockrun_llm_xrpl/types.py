@@ -63,3 +63,37 @@ class APIError(BlockrunError):
         super().__init__(message)
         self.status_code = status_code
         self.response = response
+
+
+# Smart routing types (ClawRouter integration)
+RoutingProfile = Literal["free", "eco", "auto", "premium"]
+RoutingTier = Literal["SIMPLE", "MEDIUM", "COMPLEX", "REASONING"]
+
+
+class RoutingDecision(BaseModel):
+    """Result of smart routing decision."""
+
+    model: str
+    tier: RoutingTier
+    confidence: float
+    method: Literal["rules"]
+    reasoning: str
+    cost_estimate: float
+    baseline_cost: float
+    savings: float  # 0-1 percentage
+
+
+class SmartChatResponse(BaseModel):
+    """
+    Response from smart_chat with routing information.
+
+    Example:
+        result = client.smart_chat("What is 2+2?")
+        print(result.response)  # '4'
+        print(result.model)     # 'nvidia/kimi-k2.5'
+        print(f"Saved {result.routing.savings * 100:.0f}%")
+    """
+
+    response: str
+    model: str
+    routing: RoutingDecision

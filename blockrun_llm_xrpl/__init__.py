@@ -23,6 +23,9 @@ from .types import (
     Model,
     APIError,
     PaymentError,
+    # Smart routing types
+    RoutingDecision,
+    SmartChatResponse,
 )
 from .wallet import (
     create_wallet,
@@ -45,6 +48,10 @@ __all__ = [
     "Model",
     "APIError",
     "PaymentError",
+    # Smart routing types
+    "RoutingDecision",
+    "SmartChatResponse",
+    # Wallet utilities
     "create_wallet",
     "load_wallet",
     "get_wallet_address",

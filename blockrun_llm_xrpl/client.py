@@ -10,7 +10,16 @@ from xrpl.wallet import Wallet
 from x402_xrpl.client import XRPLPresignedPaymentPayer, XRPLPresignedPaymentPayerOptions
 from x402_xrpl import PaymentRequirements
 
-from .types import ChatMessage, ChatResponse, APIError, PaymentError
+from .types import (
+    ChatMessage,
+    ChatResponse,
+    APIError,
+    PaymentError,
+    RoutingDecision,
+    SmartChatResponse,
+    RoutingProfile,
+)
+from .router import route as route_request
 from .wallet import load_wallet, get_rlusd_balance, RLUSD_ISSUER, RLUSD_CURRENCY_HEX, XRPL_RPC_URL
 
 # BlockRun XRPL API
@@ -65,6 +74,75 @@ class LLMClient:
         # Spending tracking
         self._total_spent = 0.0
         self._call_count = 0
+
+        # Model pricing cache for smart routing
+        self._model_pricing_cache: Optional[Dict[str, Dict[str, float]]] = None
+
+    def _get_model_pricing(self) -> Dict[str, Dict[str, float]]:
+        """Get model pricing for smart routing."""
+        if self._model_pricing_cache is not None:
+            return self._model_pricing_cache
+
+        models = self.list_models()
+        pricing: Dict[str, Dict[str, float]] = {}
+        for model in models:
+            model_id = model.get("id", "")
+            input_price = model.get("inputPrice", model.get("input_price", 0))
+            output_price = model.get("outputPrice", model.get("output_price", 0))
+            pricing[model_id] = {
+                "input_price": float(input_price),
+                "output_price": float(output_price),
+            }
+        self._model_pricing_cache = pricing
+        return pricing
+
+    def smart_chat(
+        self,
+        message: str,
+        system: Optional[str] = None,
+        max_tokens: int = 1024,
+        temperature: Optional[float] = None,
+        routing_profile: RoutingProfile = "auto",
+    ) -> SmartChatResponse:
+        """
+        Smart chat with automatic model routing.
+
+        Routes requests to the cheapest capable model using ClawRouter's
+        14-dimension rule-based scoring algorithm (<1ms, 100% local).
+
+        Args:
+            message: User message
+            system: Optional system prompt
+            max_tokens: Max tokens to generate (default: 1024)
+            temperature: Sampling temperature
+            routing_profile: "free" | "eco" | "auto" | "premium"
+
+        Returns:
+            SmartChatResponse with response, model, and routing decision
+        """
+        model_pricing = self._get_model_pricing()
+
+        decision = route_request(
+            prompt=message,
+            system_prompt=system,
+            max_output_tokens=max_tokens,
+            model_pricing=model_pricing,
+            routing_profile=routing_profile,
+        )
+
+        response = self.chat(
+            model=decision["model"],
+            message=message,
+            system=system,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+
+        return SmartChatResponse(
+            response=response,
+            model=decision["model"],
+            routing=RoutingDecision(**decision),
+        )
 
     def __enter__(self):
         return self
@@ -289,6 +367,75 @@ class AsyncLLMClient:
 
         self._total_spent = 0.0
         self._call_count = 0
+
+        # Model pricing cache for smart routing
+        self._model_pricing_cache: Optional[Dict[str, Dict[str, float]]] = None
+
+    async def _get_model_pricing(self) -> Dict[str, Dict[str, float]]:
+        """Get model pricing for smart routing."""
+        if self._model_pricing_cache is not None:
+            return self._model_pricing_cache
+
+        models = await self.list_models()
+        pricing: Dict[str, Dict[str, float]] = {}
+        for model in models:
+            model_id = model.get("id", "")
+            input_price = model.get("inputPrice", model.get("input_price", 0))
+            output_price = model.get("outputPrice", model.get("output_price", 0))
+            pricing[model_id] = {
+                "input_price": float(input_price),
+                "output_price": float(output_price),
+            }
+        self._model_pricing_cache = pricing
+        return pricing
+
+    async def smart_chat(
+        self,
+        message: str,
+        system: Optional[str] = None,
+        max_tokens: int = 1024,
+        temperature: Optional[float] = None,
+        routing_profile: RoutingProfile = "auto",
+    ) -> SmartChatResponse:
+        """
+        Smart chat with automatic model routing (async).
+
+        Routes requests to the cheapest capable model using ClawRouter's
+        14-dimension rule-based scoring algorithm (<1ms, 100% local).
+
+        Args:
+            message: User message
+            system: Optional system prompt
+            max_tokens: Max tokens to generate (default: 1024)
+            temperature: Sampling temperature
+            routing_profile: "free" | "eco" | "auto" | "premium"
+
+        Returns:
+            SmartChatResponse with response, model, and routing decision
+        """
+        model_pricing = await self._get_model_pricing()
+
+        decision = route_request(
+            prompt=message,
+            system_prompt=system,
+            max_output_tokens=max_tokens,
+            model_pricing=model_pricing,
+            routing_profile=routing_profile,
+        )
+
+        response = await self.chat(
+            model=decision["model"],
+            message=message,
+            system=system,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+
+        return SmartChatResponse(
+            response=response,
+            model=decision["model"],
+            routing=RoutingDecision(**decision),
+        )
 
     async def __aenter__(self):
         return self
