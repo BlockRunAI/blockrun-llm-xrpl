@@ -1,6 +1,6 @@
 # BlockRun XRPL SDK
 
-Pay-per-request access to GPT-5.2, Claude 4, Gemini 2.5, Grok, and more via x402 micropayments on XRPL with RLUSD.
+Pay-per-request access to GPT-5.2, GPT-5.2 Codex, Claude Opus 4.6, Gemini 3 Pro, Grok 4, and 38+ models via x402 micropayments on XRPL with RLUSD.
 
 ## Installation
 
@@ -55,7 +55,7 @@ result = client.smart_chat(
     "Write production-grade async Python code",
     routing_profile="premium"
 )
-print(result.model)  # 'anthropic/claude-opus-4.5'
+print(result.model)  # 'openai/gpt-5.2-codex' (coding) or 'anthropic/claude-opus-4.6' (architecture)
 ```
 
 ### How It Works
@@ -73,7 +73,7 @@ The classifier runs in <1ms, 100% locally, and routes to one of four tiers:
 
 | Tier | Example Tasks | Auto Profile Model |
 |------|---------------|-------------------|
-| SIMPLE | "What is 2+2?", definitions | nvidia/kimi-k2.5 |
+| SIMPLE | "What is 2+2?", definitions | moonshot/kimi-k2.5 |
 | MEDIUM | Code snippets, explanations | xai/grok-code-fast-1 |
 | COMPLEX | Architecture, long documents | google/gemini-3-pro-preview |
 | REASONING | Proofs, multi-step reasoning | xai/grok-4-1-fast-reasoning |
@@ -139,11 +139,17 @@ client = LLMClient()
 response = client.chat("openai/gpt-4o", "Explain quantum computing")
 print(response)
 
+# Use Codex for coding (cost-effective)
+response = client.chat(
+    "openai/gpt-5.2-codex",
+    "Write a binary search tree in Python"
+)
+
 # With system prompt
 response = client.chat(
-    "anthropic/claude-sonnet-4",
-    "Write a haiku",
-    system="You are a creative poet."
+    "anthropic/claude-opus-4.6",
+    "Design a microservices architecture",
+    system="You are a senior software architect."
 )
 ```
 
@@ -202,13 +208,20 @@ asyncio.run(main())
 
 ## Available Models
 
-All models from BlockRun are available:
+All 38+ models from BlockRun are available:
 
-- OpenAI: gpt-5.2, gpt-5-mini, gpt-4o, gpt-4o-mini, o1, o3, etc.
-- Anthropic: claude-opus-4.5, claude-sonnet-4, claude-haiku-4.5
-- Google: gemini-3-pro-preview, gemini-2.5-pro, gemini-2.5-flash
-- DeepSeek: deepseek-chat, deepseek-reasoner
-- xAI: grok-3, grok-3-fast, grok-3-mini
+- **OpenAI**: gpt-5.2, gpt-5.2-codex, gpt-4o, gpt-4o-mini, o1, o3, o4-mini
+- **Anthropic**: claude-opus-4.6, claude-opus-4.5, claude-opus-4, claude-sonnet-4.6, claude-sonnet-4, claude-haiku-4.5
+- **Google**: gemini-3-pro-preview, gemini-2.5-pro, gemini-2.5-flash
+- **DeepSeek**: deepseek-chat, deepseek-reasoner
+- **xAI**: grok-4-1-fast-reasoning, grok-4-fast-reasoning, grok-3, grok-3-mini, grok-code-fast-1
+- **NVIDIA**: gpt-oss-120b (FREE), kimi-k2.5
+- **Moonshot**: kimi-k2.5 (256k context, great for coding)
+
+**Latest Additions:**
+- **Claude Opus 4.6** - Latest flagship with 64k output
+- **GPT-5.2 Codex** - Optimized for code generation
+- **Kimi K2.5** - 256k context window, excellent for coding tasks
 
 ## Error Handling
 
