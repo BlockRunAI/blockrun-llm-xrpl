@@ -2,6 +2,14 @@
 
 Pay-per-request access to GPT-5.2, GPT-5.2 Codex, Claude Opus 4.6, Gemini 3 Pro, Grok 4, and 38+ models via x402 micropayments on XRPL with RLUSD.
 
+> **Other Chains:** For Base (USDC) payments, use [blockrun-llm](https://pypi.org/project/blockrun-llm/)
+
+| Feature | This SDK | blockrun-llm |
+|---------|----------|--------------|
+| **Chain** | XRPL | Base |
+| **Payment** | RLUSD | USDC |
+| **Wallet** | XRPL seed (s...) | EVM private key (0x...) |
+
 ## Installation
 
 ```bash
@@ -248,8 +256,9 @@ except APIError as e:
 ## Links
 
 - [Website](https://blockrun.ai)
-- [Documentation](https://docs.blockrun.ai)
+- [Documentation](https://github.com/BlockRunAI/awesome-blockrun/tree/main/docs)
 - [GitHub](https://github.com/BlockRunAI/blockrun-llm-xrpl)
+- [Telegram](https://t.me/+mroQv4-4hGgzOGUx)
 
 ## License
 
