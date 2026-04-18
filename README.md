@@ -9,6 +9,12 @@ Pay-per-request access to GPT-5.2, GPT-5.2 Codex, Claude Opus 4.6, Gemini 3 Pro,
 | **Chain** | XRPL | Base |
 | **Payment** | RLUSD | USDC |
 | **Wallet** | XRPL seed (s...) | EVM private key (0x...) |
+| **Chat** | ✅ | ✅ |
+| **Image generation** (DALL-E, Grok Imagine, Nano Banana) | ❌ | ✅ |
+| **Video generation** (Grok Imagine Video) | ❌ | ✅ |
+| **Music generation** (MiniMax) | ❌ | ✅ |
+
+> **Image + Video + Music generation require Base chain.** Use [blockrun-llm](https://pypi.org/project/blockrun-llm/) (`ImageClient`, `VideoClient`, `MusicClient`) for those endpoints.
 
 ## Installation
 
