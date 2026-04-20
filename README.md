@@ -230,12 +230,12 @@ All 38+ models from BlockRun are available:
 - **DeepSeek**: deepseek-chat, deepseek-reasoner
 - **xAI**: grok-4-1-fast-reasoning, grok-4-fast-reasoning, grok-3, grok-3-mini, grok-code-fast-1
 - **NVIDIA**: gpt-oss-120b (FREE), kimi-k2.5
-- **Moonshot**: kimi-k2.5 (256k context, great for coding)
+- **Moonshot**: kimi-k2.6 (flagship — vision + reasoning_content), kimi-k2.5 (legacy)
 
 **Latest Additions:**
 - **Claude Opus 4.6** - Latest flagship with 64k output
 - **GPT-5.2 Codex** - Optimized for code generation
-- **Kimi K2.5** - 256k context window, excellent for coding tasks
+- **Kimi K2.6** - 256k context, multi-modal (vision + text), returns reasoning_content. K2.5 still available as `moonshot/kimi-k2.5`.
 
 ## Error Handling
 
