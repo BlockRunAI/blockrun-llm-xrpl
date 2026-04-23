@@ -46,7 +46,7 @@ client = LLMClient()
 # Auto-routes to cheapest capable model
 result = client.smart_chat("What is 2+2?")
 print(result.response)  # '4'
-print(result.model)     # 'nvidia/kimi-k2.5' (cheap, fast)
+print(result.model)     # 'moonshot/kimi-k2.5' (cheap, fast — AUTO Simple pick)
 print(f"Saved {result.routing.savings * 100:.0f}%")  # 'Saved 94%'
 
 # Complex reasoning task -> routes to reasoning model

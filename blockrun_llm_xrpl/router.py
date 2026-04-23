@@ -117,7 +117,10 @@ DIMENSION_WEIGHTS = {
 
 AUTO_TIERS: Dict[Tier, TierConfig] = {
     "SIMPLE": {
-        "primary": "nvidia/kimi-k2.5",
+        # nvidia/kimi-k2.5 was retired 2026-04-21 (slow hosting).
+        # Backend still redirects to moonshot/kimi-k2.5; we point at the
+        # canonical target directly so offline routing stays honest.
+        "primary": "moonshot/kimi-k2.5",
         "fallback": ["google/gemini-2.5-flash", "nvidia/gpt-oss-120b", "deepseek/deepseek-chat"],
     },
     "MEDIUM": {
@@ -136,7 +139,8 @@ AUTO_TIERS: Dict[Tier, TierConfig] = {
 
 ECO_TIERS: Dict[Tier, TierConfig] = {
     "SIMPLE": {
-        "primary": "nvidia/kimi-k2.5",
+        # See AUTO_TIERS note: redirect to Moonshot direct.
+        "primary": "moonshot/kimi-k2.5",
         "fallback": ["nvidia/gpt-oss-120b", "deepseek/deepseek-chat"],
     },
     "MEDIUM": {
@@ -173,21 +177,24 @@ PREMIUM_TIERS: Dict[Tier, TierConfig] = {
 }
 
 FREE_TIERS: Dict[Tier, TierConfig] = {
+    # NVIDIA free tier refresh 2026-04-21: retired nemotron-*, qwen3.5-397b,
+    # mistral-large-3-675b, devstral-2-123b. New survivors + qwen3-next-80b
+    # (reasoning flagship) and mistral-small-4-119b (fastest chat).
     "SIMPLE": {
         "primary": "nvidia/gpt-oss-120b",
-        "fallback": [],
+        "fallback": ["nvidia/mistral-small-4-119b", "nvidia/deepseek-v3.2"],
     },
     "MEDIUM": {
-        "primary": "nvidia/gpt-oss-120b",
-        "fallback": [],
+        "primary": "nvidia/deepseek-v3.2",
+        "fallback": ["nvidia/qwen3-coder-480b", "nvidia/gpt-oss-120b"],
     },
     "COMPLEX": {
-        "primary": "nvidia/gpt-oss-120b",
-        "fallback": [],
+        "primary": "nvidia/qwen3-next-80b-a3b-thinking",
+        "fallback": ["nvidia/llama-4-maverick", "nvidia/gpt-oss-120b"],
     },
     "REASONING": {
-        "primary": "nvidia/gpt-oss-120b",
-        "fallback": [],
+        "primary": "nvidia/qwen3-next-80b-a3b-thinking",
+        "fallback": ["nvidia/glm-4.7", "nvidia/gpt-oss-120b"],
     },
 }
 
