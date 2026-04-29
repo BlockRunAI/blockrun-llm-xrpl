@@ -2,7 +2,7 @@
 
 Pay-per-request access to GPT-5.2, GPT-5.2 Codex, Claude Opus 4.6, Gemini 3 Pro, Grok 4, and 38+ models via x402 micropayments on XRPL with RLUSD.
 
-> 🆓 **Includes 8 fully-free NVIDIA-hosted models** (Qwen3, Llama 4, GLM-4.7, GPT-OSS, DeepSeek V3.2, Mistral) — zero RLUSD, no rate-limit gimmicks. Use `routing_profile="free"` or call any `nvidia/*` model directly.
+> 🆓 **Includes 9 fully-free NVIDIA-hosted models** — DeepSeek V4 Pro/Flash (1M context), Nemotron Nano Omni (vision), Qwen3, Llama 4, GLM-4.7, Mistral. Zero RLUSD, no rate-limit gimmicks. Use `routing_profile="free"` or call any `nvidia/*` model directly.
 
 > **Other Chains:** For Base (USDC) payments, use [blockrun-llm](https://pypi.org/project/blockrun-llm/)
 
@@ -50,22 +50,25 @@ response = client.chat("nvidia/qwen3-next-80b-a3b-thinking", "Explain x402 in 1 
 
 # Option 2: let the smart router pick the best free model per request
 result = client.smart_chat("What is 2+2?", routing_profile="free")
-print(result.model)     # e.g. 'nvidia/gpt-oss-120b'
+print(result.model)     # e.g. 'nvidia/deepseek-v4-flash'
 print(result.response)  # '4'
 ```
 
-**Available free models** (input + output both $0, all NVIDIA-hosted, last refreshed 2026-04-21):
+**Available free models** (input + output both $0, all NVIDIA-hosted, last refreshed 2026-04-28):
 
-| Model ID | Context | Speed | Best For |
-|----------|---------|-------|----------|
-| `nvidia/qwen3-next-80b-a3b-thinking` | 131K | 116 tok/s | Reasoning flagship — thinking mode |
-| `nvidia/mistral-small-4-119b` | 131K | 114 tok/s | Fastest free chat |
-| `nvidia/glm-4.7` | 131K | 237 tok/s | GLM-4.7 with thinking mode |
-| `nvidia/llama-4-maverick` | 131K | — | Meta Llama 4 Maverick MoE |
-| `nvidia/qwen3-coder-480b` | 131K | — | Coding-optimised 480B MoE |
-| `nvidia/deepseek-v3.2` | 131K | — | DeepSeek V3.2 hosted |
-| `nvidia/gpt-oss-120b` | 128K | 123 tok/s | OpenAI open-weight 120B |
-| `nvidia/gpt-oss-20b` | 128K | 155 tok/s | OpenAI open-weight 20B (smallest, fastest) |
+| Model ID | Context | Best For |
+|----------|---------|----------|
+| `nvidia/deepseek-v4-pro` | 1M | Flagship reasoning — MMLU-Pro 87.5, GPQA 90.1, SWE-bench 80.6, LiveCodeBench 93.5 |
+| `nvidia/deepseek-v4-flash` | 1M | ~5× faster than V4 Pro — chat, summarization, light reasoning (weaker factual recall) |
+| `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning` | 256K | Only vision-capable free model — text + images + video (≤2 min) + audio (≤1 hr) |
+| `nvidia/qwen3-next-80b-a3b-thinking` | 131K | 116 tok/s reasoning with thinking mode |
+| `nvidia/mistral-small-4-119b` | 131K | 114 tok/s — fastest free chat |
+| `nvidia/glm-4.7` | 131K | 237 tok/s — GLM-4.7 with thinking mode |
+| `nvidia/llama-4-maverick` | 131K | Meta Llama 4 Maverick MoE |
+| `nvidia/qwen3-coder-480b` | 131K | Coding-optimised 480B MoE |
+| `nvidia/deepseek-v3.2` | 131K | Legacy V3.2 — auto-upgrades to V4 Pro via fallback |
+
+> Note: `nvidia/gpt-oss-120b` and `nvidia/gpt-oss-20b` were retired 2026-04-28 — NVIDIA's free build.nvidia.com tier reserves the right to use prompts/outputs for service improvement, which conflicts with our data-privacy policy.
 
 ## Smart Routing (ClawRouter)
 
@@ -91,7 +94,7 @@ print(result.model)  # 'xai/grok-4-1-fast-reasoning'
 
 | Profile | Description | Best For |
 |---------|-------------|----------|
-| `free` | NVIDIA free tier — smart-routes across 8 models (Qwen3, GLM-4.7, Llama 4, GPT-OSS, DeepSeek V3.2, Mistral) | Zero-cost testing, dev, prod |
+| `free` | NVIDIA free tier — smart-routes across 9 models (DeepSeek V4 Pro/Flash, Nemotron Nano Omni, Qwen3, GLM-4.7, Llama 4, Mistral) | Zero-cost testing, dev, prod |
 | `eco` | Cheapest models per tier (DeepSeek, xAI) | Cost-sensitive production |
 | `auto` | Best balance of cost/quality (default) | General use |
 | `premium` | Top-tier models (OpenAI, Anthropic) | Quality-critical tasks |
@@ -262,7 +265,7 @@ All 38+ models from BlockRun are available:
 - **Google**: gemini-3-pro-preview, gemini-2.5-pro, gemini-2.5-flash
 - **DeepSeek**: deepseek-chat, deepseek-reasoner
 - **xAI**: grok-4-1-fast-reasoning, grok-4-fast-reasoning, grok-3, grok-3-mini, grok-code-fast-1
-- **NVIDIA (all FREE)**: qwen3-next-80b-a3b-thinking, mistral-small-4-119b, glm-4.7, llama-4-maverick, qwen3-coder-480b, deepseek-v3.2, gpt-oss-120b, gpt-oss-20b
+- **NVIDIA (all FREE)**: deepseek-v4-pro, deepseek-v4-flash, nemotron-3-nano-omni-30b-a3b-reasoning (vision), qwen3-next-80b-a3b-thinking, mistral-small-4-119b, glm-4.7, llama-4-maverick, qwen3-coder-480b, deepseek-v3.2
 - **Moonshot**: kimi-k2.6 (flagship — vision + reasoning_content), kimi-k2.5 (legacy)
 
 **Latest Additions:**
