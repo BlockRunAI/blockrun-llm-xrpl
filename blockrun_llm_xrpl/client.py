@@ -28,6 +28,11 @@ XRPL_API_URL = "https://xrpl.blockrun.ai/api"
 # XRPL Network
 XRPL_NETWORK = "xrpl:0"  # mainnet
 
+# Default chat request timeout (seconds). 600s because reasoning models
+# (opus-4.8 / deepseek-v4-pro) think 200-300s+ and the old default cut them
+# off. Override via the BLOCKRUN_CHAT_TIMEOUT env var. Mirrors blockrun-llm.
+DEFAULT_CHAT_TIMEOUT = float(os.environ.get("BLOCKRUN_CHAT_TIMEOUT", "600"))
+
 
 class LLMClient:
     """
@@ -46,7 +51,7 @@ class LLMClient:
         seed: Optional[str] = None,
         api_url: str = XRPL_API_URL,
         rpc_url: str = XRPL_RPC_URL,
-        timeout: float = 60.0,
+        timeout: float = DEFAULT_CHAT_TIMEOUT,
     ):
         """
         Initialize the XRPL LLM client.
@@ -55,7 +60,8 @@ class LLMClient:
             seed: XRPL wallet seed. If not provided, uses BLOCKRUN_XRPL_SEED env var.
             api_url: BlockRun API URL (default: https://xrpl.blockrun.ai/api)
             rpc_url: XRPL RPC URL for autofill (default: https://xrplcluster.com)
-            timeout: Request timeout in seconds
+            timeout: Request timeout in seconds (default: 600, override via
+                BLOCKRUN_CHAT_TIMEOUT env). Reasoning models need 200-300s+.
         """
         self.wallet = load_wallet(seed)
         self.api_url = api_url.rstrip("/")
@@ -349,7 +355,7 @@ class AsyncLLMClient:
         seed: Optional[str] = None,
         api_url: str = XRPL_API_URL,
         rpc_url: str = XRPL_RPC_URL,
-        timeout: float = 60.0,
+        timeout: float = DEFAULT_CHAT_TIMEOUT,
     ):
         self.wallet = load_wallet(seed)
         self.api_url = api_url.rstrip("/")
