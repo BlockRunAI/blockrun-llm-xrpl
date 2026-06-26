@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "blockrun-llm-xrpl"
-version = "0.1.0"
+version = "0.2.0"
 description = "BlockRun SDK for XRPL - Pay-per-request AI via x402 with RLUSD"
 readme = "README.md"
 license = "MIT"
@@ -42,7 +42,7 @@ dev = [
 
 [project.urls]
 Homepage = "https://blockrun.ai"
-Documentation = "https://docs.blockrun.ai"
+Documentation = "https://github.com/BlockRunAI/awesome-blockrun/tree/main/docs"
 Repository = "https://github.com/BlockRunAI/blockrun-llm-xrpl"
 
 [tool.hatch.build.targets.wheel]
